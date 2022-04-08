@@ -28,6 +28,7 @@ spec:
       uri: /
     route:
     - destination:
-        host: sample-golang.sample-golang.svc.cluster.local
+        host: sample-golang
+        subset: v1
         port:
           number: 8080
