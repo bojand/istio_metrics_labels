@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: common
+  namespace: sample-golang
+  labels:
+    app: sample-golang
+    version: v1
+spec:
+  gateways:
+  - istio-system/ingressgateway
+  hosts:
+  - sample-golang.example.com
+  http:
+  - headers:
+      request:
+        remove:
+        - X-Envoy-Peer-Metadata-Id
+        - X-Envoy-Peer-Metadata
+        - X-Envoy-Attempt-Count
+      response:
+        add:
+          X-Do-Component-Type: service
+    match:
+    - uri:
+        prefix: /
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: sample-golang.sample-golang.svc.cluster.local
+        port:
+          number: 8080
