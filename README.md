@@ -54,3 +54,9 @@ kubectl exec "$(kubectl get pod -n istio-system -l=istio=ingressgateway -o jsonp
 ```
 
 Notice how `destination_app` is `unknown`.
+
+```sh
+total
+# TYPE istio_requests_total counter
+istio_requests_total{response_code="200",reporter="source",source_workload="istio-ingressgateway",source_workload_namespace="istio-system",source_principal="unknown",source_app="istio-ingressgateway",source_version="unknown",source_cluster="Kubernetes",destination_workload="sample-golang",destination_workload_namespace="sample-golang",destination_principal="unknown",destination_app="unknown",destination_version="unknown",destination_service="sample-golang.sample-golang.svc.cluster.local",destination_service_name="sample-golang",destination_service_namespace="sample-golang",destination_cluster="Kubernetes",request_protocol="http",response_flags="-",grpc_response_status="",connection_security_policy="unknown",source_canonical_service="istio-ingressgateway",destination_canonical_service="sample-golang",source_canonical_revision="latest",destination_canonical_revision="latest"} 3
+```
