@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: sample-golang
+  namespace: sample-golang
+  labels:
+    app: sample-golang
+    version: v1
+spec:
+  host: sample-golang
+  subsets:
+  - name: v1
+    labels:
+      app: sample-golang
+      version: v1

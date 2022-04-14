@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: external-app
+    version: v1
+  name: external-app
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: common
+  namespace: external-app
+  labels:
+    app: external-app
+    version: v1
+spec:
+  gateways:
+  - istio-system/ingressgateway
+  hosts:
+  - external.example.com
+  http:
+  - headers:
+      request:
+        remove:
+        - authorization
+        - X-Envoy-Peer-Metadata-Id
+        - X-Envoy-Peer-Metadata
+        - X-Envoy-Attempt-Count
+        set:
+          Host: lbp0.jangles.io
+          X-Do-App-Platform-App-Uuid: external-app
+      response:
+        add:
+          X-Do-Component-Type: static-site
+          X-Do-Static-Catchall-Document: index.html
+    match:
+    - uri:
+        prefix: /
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: lbp0.jangles.io
+        # subset: v1
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  namespace: external-app
+  name: external
+  labels:
+    app: external-app
+    version: v1
+spec:
+  # endpoints:
+  # - address: lbp0.jangles.io
+  hosts:
+    - lbp0.jangles.io
+  location: MESH_EXTERNAL
+  ports:
+  - name: https
+    number: 443
+    protocol: HTTPS
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: external-app
+  namespace: external-app
+  labels:
+    app: external-app
+    version: v1
+spec:
+  host: lbp0.jangles.io
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+  # subsets:
+  # - name: v1
+  #   labels:
+  #     app: external-app
+  #     version: v1
