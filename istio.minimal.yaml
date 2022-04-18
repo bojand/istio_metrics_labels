@@ -73,7 +73,7 @@ spec:
       meshNetworks: {}
       mountMtlsCerts: false
       multiCluster:
-        clusterName: ""
+        clusterName: "my_custom_cluster_name"
         enabled: false
       network: ""
       omitSidecarInjectorConfigMap: false

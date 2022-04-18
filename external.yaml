@@ -64,6 +64,22 @@ spec:
     number: 443
     protocol: HTTPS
   resolution: DNS
+  workloadSelector:
+    labels:
+      app: external-app-id
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: WorkloadEntry
+metadata:
+  name: external-app-we
+  namespace: external-app
+  labels:
+    app: external-app-we-app
+    version: v1
+spec:
+  address: lbp0.jangles.io
+  labels:
+    app: external-app-id
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
